@@ -34,7 +34,7 @@
                 class="w-75"
               >
                 <template #first>
-                  <option value="">-- none --</option>
+                  <option value="">-- 없음 --</option>
                 </template>
               </b-form-select>
 
@@ -45,8 +45,8 @@
                 size="sm"
                 class="w-25"
               >
-                <option :value="false">Asc</option>
-                <option :value="true">Desc</option>
+                <option :value="false">오름차순</option>
+                <option :value="true">내림차순</option>
               </b-form-select>
             </b-input-group>
           </b-form-group>
@@ -84,7 +84,7 @@
                 id="filter-input"
                 v-model="filter"
                 type="search"
-                placeholder="Type to Search"
+                placeholder="검색할 내용을 입력하세요"
               ></b-form-input>
 
               <b-input-group-append>
@@ -97,8 +97,8 @@
         <b-col lg="6" class="my-1">
           <b-form-group
             v-model="sortDirection"
-            label="필터"
-            description="Leave all unchecked to filter on all data"
+            label="필터 :"
+            description="모든 데이터를 검색하려면, 필터를 모두 해제하세요."
             label-cols-sm="3"
             label-align-sm="right"
             label-size="sm"
@@ -111,7 +111,7 @@
               class="mt-1"
             >
               <b-form-checkbox value="name">이름</b-form-checkbox>
-              <b-form-checkbox value="age">나이</b-form-checkbox>
+              <b-form-checkbox value="department">부서</b-form-checkbox>
               <b-form-checkbox value="isActive">출근</b-form-checkbox>
             </b-form-checkbox-group>
           </b-form-group>
@@ -154,9 +154,9 @@
         small
         @filtered="onFiltered"
       >
-        <template #cell(name)="row">
+        <!-- <template #cell(name)="row">
           {{ row.value.first }} {{ row.value.last }}
-        </template>
+        </template> -->
 
         <template #cell(actions)="row">
           <b-button size="sm" @click="info(row.item, row.index, $event.target)" class="mr-1">
@@ -175,23 +175,25 @@
           </b-card>
         </template>
       </b-table>
+      <b-row>
+        <b-col md="12" lg="12" class="my-1">
+          <b-pagination
+            v-model="currentPage"
+            :total-rows="totalRows"
+            :per-page="perPage"
+            align="center"
+            size="md"
+            class="my-0"
+          ></b-pagination>
+        </b-col>
+      </b-row>
+
 
       <!-- Info modal -->
       <b-modal :id="infoModal.id" :title="infoModal.title" ok-only @hide="resetInfoModal">
         <pre>{{ infoModal.content }}</pre>
       </b-modal>
-      <b-row>
-        <b-col sm="6" md="6" class="my-1">
-          <b-pagination
-            v-model="currentPage"
-            :total-rows="totalRows"
-            :per-page="perPage"
-            align="fill"
-            size="sm"
-            class="my-0"
-          ></b-pagination>
-        </b-col>
-      </b-row>
+  
     </b-container>
   </b-modal>
 
@@ -207,7 +209,7 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import timeGridPlugin from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
-import moment from "moment"
+// import moment from "moment"
 
 import koLocale from "@fullcalendar/core/locales/ko"
 import bootstrapPlugin from '@fullcalendar/bootstrap';
@@ -221,38 +223,16 @@ export default {
   data() {
     return {
       items: [
-        { isActive: true, age: 40, name: { first: 'Dickerson', last: 'Macdonald' }, in:"2021-01-13 오전 9:46", out:"2021-01-13 오전 9:46" },
-        { isActive: false, age: 21, name: { first: 'Larsen', last: 'Shaw' }, in:"2021-01-13 오전 9:46", out:"2021-01-13 오전 9:46" },
-        {
-          isActive: false,
-          age: 9,
-          name: { first: 'Mini', last: 'Navarro' },
-          in:"2021-01-13 오전 9:46", out:"2021-01-13 오전 9:46"
-        },
-        { isActive: false, age: 89, name: { first: 'Geneva', last: 'Wilson' }, in:"2021-01-13 오전 9:46", out:"2021-01-13 오전 9:46" },
-        { isActive: true, age: 38, name: { first: 'Jami', last: 'Carney' }, in:"2021-01-13 오전 9:46", out:"2021-01-13 오전 9:46" },
-        { isActive: false, age: 27, name: { first: 'Essie', last: 'Dunlap' }, in:"2021-01-13 오전 9:46", out:"2021-01-13 오전 9:46" },
-        { isActive: true, age: 40, name: { first: 'Thor', last: 'Macdonald' }, in:"2021-01-13 오전 9:46", out:"2021-01-13 오전 9:46" },
-        {
-          isActive: true,
-          age: 87,
-          name: { first: 'Larsen', last: 'Shaw' },
-          _cellVariants: { age: 'danger', isActive: 'warning' },
-          in:"2021-01-13 오전 9:46", out:"2021-01-13 오전 9:46"
-        },
-        { isActive: false, age: 26, name: { first: 'Mitzi', last: 'Navarro' },in:"2021-01-13 오전 9:46", out:"2021-01-13 오전 9:46" },
-        { isActive: false, age: 22, name: { first: 'Genevieve', last: 'Wilson' },in:"2021-01-13 오전 9:46", out:"2021-01-13 오전 9:46" },
-        { isActive: true, age: 38, name: { first: 'John', last: 'Carney' },in:"2021-01-13 오전 9:46", out:"2021-01-13 오전 9:46" },
-        { isActive: false, age: 29, name: { first: 'Dick', last: 'Dunlap' },in:"2021-01-13 오전 9:46", out:"2021-01-13 오전 9:46" }
+        { isActive: true, department:'영업', name: 'Dunlap', in:"2021-01-13 오전 9:46", out:"2021-01-13 오전 9:46" },
       ],
       fields: [
         { key: 'name', label: '이름', sortable: true, sortDirection: 'desc' },
-        { key: 'age', label: '나이', sortable: true, class: 'text-center' },
+        { key: 'department', label: '부서', sortable: true, class: 'text-center' },
         {
           key: 'isActive',
           label: '출근',
-          formatter: (value, key, item) => {
-            console.log(key,item)
+          formatter: (value) => {
+            // console.log(key,item)
             return value ? 'Yes' : 'No'
           },
           sortable: true,
@@ -260,13 +240,13 @@ export default {
           filterByFormatted: true
         },
         { key: 'actions', label: 'Actions' },
-        { key: 'in', label:"출근"},
-        { key: 'out', label:"퇴근"}
+        { key: 'in', label:"출근시간"},
+        { key: 'out', label:"퇴근시간"}
       ],
       totalRows: 1,
       currentPage: 1,
       perPage: 5,
-      pageOptions: [5, 10, 15, { value: 100, text: "Show a lot" }],
+      pageOptions: [5, 10, 15, { value: 100, text: "100개씩" }],
       sortBy: '',
       sortDesc: false,
       sortDirection: 'asc',
@@ -278,8 +258,6 @@ export default {
         content: ''
       },
       //// table 끝 /////
-
-
 
       calendarEvents: calendarEvents,
       calendarOptions: {
@@ -293,41 +271,31 @@ export default {
           { title: 'event 2', date: '2019-01-16' }
         ],
         customButtons: {
-          myCustomButton: {
-            text: 'custom!',
+          inButton: {
+            text: '출석체크',
              click:() => {
-              var dateStr = prompt('Enter a date in YYYY-MM-DD format');
-              var date = moment(dateStr);
-
-              if (date.isValid()) { 
-
-                console.log(this.$refs.fullCalendar)
-                console.log(this.$refs.fullCalendar.getApi())
-                const ttt = this.$refs.fullCalendar.getApi()
-                // calendarEvents.push({
-                //   id: 50,
-                //   title: '냐하하',
-                //   start: new Date(),
-                //   end: new Date(),
-                //   className: 'bg-success text-white',
-                // }) 
-                ttt.addEvent({
-                  id: 55,
-                  title: '냐하하',
-                  start: new Date(),
-                  end: new Date(),
-                  allDay: true
-                })
-                alert('Great. Now, update your database...');
-                // this.$nextTick(() => ttt.render())
-              } else { 
-                alert('Invalid date.');
-              }
+              const fc = this.$refs.fullCalendar.getApi()
+              fc.addEvent({
+                id: 55,
+                title: '냐하하',
+                start: new Date(),
+                end: new Date(),
+                className: 'bg-primary text-white'
+              })
+              // alert('출석 체크 하였습니다.');               
+              this.checkIn(false)
+            }
+          },
+          outButton:{
+            text:'퇴근체크',
+            click:() =>{
+              this.checkOut(false)
             }
           }
+
         },
         headerToolbar: {
-          left: "prev,next today myCustomButton",
+          left: "prev,next today inButton outButton",
           center: "title",
           right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek",
         },
@@ -358,6 +326,7 @@ export default {
   mounted() {
     // Set the initial number of items
     this.totalRows = this.items.length
+    this.btnSetting();
   },
   methods: {
     info(item, index, button) {
@@ -374,10 +343,14 @@ export default {
       this.totalRows = filteredItems.length
       this.currentPage = 1
     },
-    handleDateClick: function(arg) {
-      alert('date click! ' + arg.dateStr)
-    },
     dateClicked(info) {
+      console.log(info.dateStr)
+      //내생각에는 dateStr로 해당 날짜에 대한 검사 후에, 그값만 items로 뽑아내면 될거 같은데?
+      this.items = [
+        { isActive: false, name: '전인표', department:"영업" ,in:"2021-01-13 오전 9:46", out:"2021-01-13 오전 9:46" },
+        { isActive: true, name: '김태균', department:"관리", in:"2021-01-13 오전 9:46", out:"2021-01-13 오전 9:46" },
+        { isActive: false, name: '홍치선', department:"경영", in:"2021-01-13 오전 9:46", out:"2021-01-13 오전 9:46" }
+      ]
       this.newEventData = info;
       this.showModal = true;
     },
@@ -387,33 +360,40 @@ export default {
       this.showModal = false;
       this.event = {};
     },
+
     handleSubmit(){
       alert("clicked");
+    },
+
+    // 버튼 초기 세팅
+    btnSetting(){
+      const outBtn = document.querySelector(".fc-outButton-button")
+      outBtn.setAttribute('disabled', true);
+    },
+
+    checkIn(){
+      //출근 버튼 숨기기
+      const inBtn = document.querySelector(".fc-inButton-button")
+      inBtn.setAttribute('disabled', true);
+    
+      alert("출근 처리 되었습니다.")
+
+      //퇴근 버튼 생성하기
+      const outBtn = document.querySelector(".fc-outButton-button")
+      outBtn.removeAttribute('disabled');
+    },
+
+    checkOut(){
+      const outBtn = document.querySelector(".fc-outButton-button")
+      outBtn.setAttribute('disabled', true);
       
-
-
-
-    }
-
+      //db에 퇴근시간 기록 필요! update 구문 사용
+      
+      alert("퇴근 처리 되었습니다.")
+    },
 
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-</style>
